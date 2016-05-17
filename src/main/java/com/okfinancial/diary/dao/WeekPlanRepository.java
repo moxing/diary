@@ -4,10 +4,12 @@
 package com.okfinancial.diary.dao;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+import com.okfinancial.diary.domain.User;
 import com.okfinancial.diary.domain.WeekPlan;
 
 
@@ -16,10 +18,14 @@ import com.okfinancial.diary.domain.WeekPlan;
  *
  */
 public interface WeekPlanRepository extends CrudRepository<WeekPlan, Long> {
-		
-	List<WeekPlan> findByUserId(Long userId);
 	
-	@Query("select w from WeekPlan w where w.startDate = ?1 and w.endDate<?1")
-	WeekPlan findByDate(Date date);
+//	@RestResource(path = "user")
+//	@Query("select w from WeekPlan w where w.User.id = :userId and w.startDate> NOW() and w.endDate<NOW()")
+//	WeekPlan findCurrWeekPlanByUser(@Param(""));
+	
+	@Query("from WeekPlan w where w.user = :user and w.startDate < :date and w.endDate > :date")
+	WeekPlan findByUserAndDate(@Param("user") User user, @Param("date") Date date);
+	
+	WeekPlan findByUserOrderByStartDateDesc(@Param("user") User user);
 	
 }

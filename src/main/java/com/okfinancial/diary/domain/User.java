@@ -2,32 +2,36 @@ package com.okfinancial.diary.domain;
 
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.okfinancial.diary.util.DigestUtils;
 import com.okfinancial.diary.web.VoFilter;
 
 @Entity
+@Where(clause="state=0")
 public class User extends AbstractEntity {
 	
 	@JsonView(VoFilter.View.class)
 	@Column(nullable = false)
 	private String name;
 	
-	
 	@Column(nullable = false)
 	private String password;
 	
-	@JsonView(VoFilter.DetailView.class)
 	@Column(nullable = false)
 	private int level;
 	
-	@JsonView(VoFilter.DetailView.class)
 	@Column(nullable = false)
 	private int state;
 
@@ -36,8 +40,15 @@ public class User extends AbstractEntity {
 	private String email;
     
 	@ManyToOne
-	@JoinColumn(name="team_id")
-    private Team team;
+	@JoinColumn(name="leader_id")
+    private User leader;
+	
+	@JsonView(VoFilter.DetailView.class)
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "leader")
+    private List<User> members;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Okr> okrs;
 	
 	protected User(){
 		super();
@@ -90,12 +101,20 @@ public class User extends AbstractEntity {
 		this.email = email;
 	}
 
-	public Team getTeam() {
-		return team;
+	public User getLeader() {
+		return leader;
 	}
 
-	public void setTeam(Team team) {
-		this.team = team;
+	public void setLeader(User leader) {
+		this.leader = leader;
+	}
+
+	public List<User> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<User> members) {
+		this.members = members;
 	}
 
 }

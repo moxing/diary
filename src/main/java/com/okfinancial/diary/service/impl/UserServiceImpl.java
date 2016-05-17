@@ -1,5 +1,7 @@
 package com.okfinancial.diary.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,5 +31,23 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User saveUser(User user) {
 		return this.userRepository.save(user);
+	}
+
+	@Override
+	public List<User> getUserIsNotLeader() {
+		return this.userRepository.findByLeaderIsNull();
+	}
+
+	@Override
+	public void deleteUser(User user,User leader) {
+//		if(user.getMembers().size()>0){
+//			leader.setMembers(user.getMembers());
+			user.getMembers().clear();
+//		}
+//		if(leader!=null){
+//			this.userRepository.save(leader);
+//		}
+		user.setState(1);
+		this.userRepository.save(user);
 	}
 }

@@ -2,37 +2,52 @@ package com.okfinancial.diary.domain;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.okfinancial.diary.util.DateUtils;
+import com.okfinancial.diary.web.VoFilter;
 
 @Entity
 public class WeekPlan extends AbstractEntity {
 
+	@JsonView(VoFilter.View.class)
 	@ManyToOne(fetch=FetchType.LAZY, optional=true)  
     @JoinColumn(name="user_id")  
 	private User user;
 	
 	private int status;
 	
+	@JsonView(VoFilter.View.class)
 	@Column(name="start_date") 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
 	
+	@JsonView(VoFilter.View.class)
 	@Column(name="end_date")
 	@Temporal(TemporalType.TIMESTAMP)  
 	private Date endDate;
 	
+	@JsonView(VoFilter.View.class)
 	@Column(name="week_no")
 	private int weekNo;
 	
+	@JsonView(VoFilter.View.class)
 	@Column(name="month_no")
 	private int monthNo;
+	
+	@JsonView(VoFilter.View.class)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "weekPlan")
+	private List<DayPlan> dayPlans;
 	
 	private int level;
 	
@@ -40,13 +55,14 @@ public class WeekPlan extends AbstractEntity {
 		super();
 	}
 	
-	public WeekPlan(Date date){
+	public WeekPlan(User user, Date date){
 		Calendar cal = Calendar.getInstance();
-		
-		cal.add(Calendar.DAY_OF_MONTH, -1); //解决周日会出现 并到下一周的情况
-		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-				 
-		this.startDate = cal.getTime();			 
+		cal.setTime(date);
+		this.startDate = DateUtils.getNowWeekMonday(date);
+		this.endDate = DateUtils.getNowWeekSunday(date);
+		this.monthNo = cal.get(Calendar.WEEK_OF_MONTH);
+		this.weekNo = cal.get(Calendar.WEEK_OF_YEAR);
+		this.user = user;
 	}
 
 	public User getUser() {
@@ -63,6 +79,14 @@ public class WeekPlan extends AbstractEntity {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public List<DayPlan> getDayPlans() {
+		return dayPlans;
+	}
+
+	public void setDayPlans(List<DayPlan> dayPlans) {
+		this.dayPlans = dayPlans;
 	}
 
 	public Date getStartDate() {
@@ -103,10 +127,5 @@ public class WeekPlan extends AbstractEntity {
 
 	public void setLevel(int level) {
 		this.level = level;
-	}
-
-	public static void main(String[] args) {
-		Calendar cal = Calendar.getInstance();
-		System.out.println(cal.get(Calendar.DAY_OF_WEEK));
 	}
 }

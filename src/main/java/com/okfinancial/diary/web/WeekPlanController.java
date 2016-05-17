@@ -1,25 +1,35 @@
 package com.okfinancial.diary.web;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.okfinancial.diary.service.UserService;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.okfinancial.diary.domain.WeekPlan;
+import com.okfinancial.diary.service.WeekPlanService;
 
 @RestController
-public class WeekPlanController {
+@RequestMapping(value="/weekplan")
+public class WeekPlanController extends AbstractController {
 	
 	@Autowired
-	private UserService userService;
+	private WeekPlanService weekPlanService;
 	
-	@RequestMapping(value="/week",method=RequestMethod.GET)
-	public String index(){
-		return "index";
+	@JsonView(VoFilter.DetailView.class) 
+	@RequestMapping(method=RequestMethod.GET)
+	public WeekPlan index(){
+		return weekPlanService.findByUserAtDate(this.getUser(), new Date());
 	}
 	
-	@RequestMapping(value="/week/add",method=RequestMethod.GET)
-	public String newWeekPlan(){
-		return "week";
+	@JsonView(VoFilter.DetailView.class)
+	@RequestMapping(value="/next",method=RequestMethod.GET)
+	public WeekPlan next(){
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.WEEK_OF_YEAR, +1);
+		return weekPlanService.findByUserAtDate(this.getUser(), calendar.getTime());
 	}
 }

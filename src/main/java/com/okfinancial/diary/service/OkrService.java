@@ -1,8 +1,8 @@
 package com.okfinancial.diary.service;
 
-import java.util.Date;
-
+import java.util.Calendar;
 import com.okfinancial.diary.domain.Okr;
+import com.okfinancial.diary.domain.User;
 
 public interface OkrService {
 	
@@ -10,6 +10,6 @@ public interface OkrService {
 	
 	Okr findById(Long id);
 	
-	Okr findByDate(Date date);
+	Okr findByUserAtQuarter(User user, Calendar calendar);
 	
 }
