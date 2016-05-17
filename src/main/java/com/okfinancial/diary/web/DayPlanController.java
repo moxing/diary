@@ -28,18 +28,27 @@ public class DayPlanController  extends AbstractController{
 	private DayPlanService dayPlanService;
 	
 	@RequestMapping(value="/leader/{id}/day/{date}",method=RequestMethod.GET)
-	@JsonView(VoFilter.DetailView.class) 
+	@JsonView(VoFilter.View.class) 
 	List<DayPlan> membersDayPlan(@PathVariable("id") User leader, @PathVariable("date") Date date){
 		return dayPlanService.memberDayPlan(leader, date);
 	}
 	
 	@RequestMapping(value="/weekplan/{id}",method=RequestMethod.POST)
-	@JsonView(VoFilter.DetailView.class) 
+	@JsonView(VoFilter.View.class) 
 	List<DayPlan> saveDayPlan(@PathVariable("id") WeekPlan weekPlan ,@RequestBody List<DayPlan> list){
 		for (DayPlan dayPlan : list) {
 			dayPlan.setWeekPlan(weekPlan);
 			dayPlan.setUser(this.getUser());
 		}
 		return dayPlanService.saveAll(list);
+	}
+	
+	@RequestMapping(value="/{id}",method={RequestMethod.POST,RequestMethod.PUT})
+	@JsonView(VoFilter.View.class) 
+	DayPlan dayPlan(@PathVariable("id") DayPlan oriDayPlan ,@RequestBody DayPlan dayPlan){
+		oriDayPlan.setPlanContent(dayPlan.getPlanContent());
+		oriDayPlan.setStatus(dayPlan.getStatus());
+		oriDayPlan.setRemark(dayPlan.getRemark());
+		return dayPlanService.save(oriDayPlan);
 	}
 }

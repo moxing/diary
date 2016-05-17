@@ -4,39 +4,45 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.okfinancial.diary.web.VoFilter;
 
 @Entity
-public class WeekPlanReview extends AbstractEntity {
+public class DayPlanReview extends AbstractEntity {
 	
 	@ManyToOne(fetch=FetchType.LAZY, optional=true)  
-    @JoinColumn(name="user_id")  
-	private User Reviewer;
+    @JoinColumn(name="user_id")
+	@JsonView(VoFilter.View.class)
+	private User reviewer;
 	
-	@ManyToOne(fetch=FetchType.LAZY, optional=true)
-	@JoinColumn(name="week_plan_id")
-	private WeekPlan weekPlan;
+	@OneToOne(fetch=FetchType.LAZY, optional=true)
+	@JoinColumn(name="day_plan_id")
+	private DayPlan dayPlan;
 	
 	private int level;
 	
+	@JsonView(VoFilter.View.class)
 	private String content;
 	
-	public WeekPlanReview() {
+	public DayPlanReview() {
 	}
 
 	public User getReviewer() {
-		return Reviewer;
+		return reviewer;
 	}
 
 	public void setReviewer(User reviewer) {
-		Reviewer = reviewer;
+		this.reviewer = reviewer;
 	}
 
-	public WeekPlan getWeekPlan() {
-		return weekPlan;
+	public DayPlan getDayPlan() {
+		return dayPlan;
 	}
 
-	public void setWeekPlan(WeekPlan weekPlan) {
-		this.weekPlan = weekPlan;
+	public void setDayPlan(DayPlan dayPlan) {
+		this.dayPlan = dayPlan;
 	}
 
 	public int getLevel() {

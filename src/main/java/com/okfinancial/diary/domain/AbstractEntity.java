@@ -19,7 +19,7 @@ public class AbstractEntity {
 
 	@Id
 	@GeneratedValue
-	@JsonView(VoFilter.DetailView.class)
+	@JsonView(VoFilter.View.class)
 	private Long id;
 
 	@Temporal(TemporalType.TIMESTAMP)  

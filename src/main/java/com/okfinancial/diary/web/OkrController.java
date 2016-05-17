@@ -24,13 +24,13 @@ public class OkrController extends AbstractController {
 	private UserService userService;
 
 	@RequestMapping(value="/{id}",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	@JsonView(VoFilter.DetailView.class) 
+	@JsonView(VoFilter.View.class) 
 	Okr okrById(@PathVariable("id") Okr okr){
 		return okr;
 	}
 	
 	@RequestMapping(value="/current",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	@JsonView(VoFilter.DetailView.class) 
+	@JsonView(VoFilter.View.class) 
 	Okr okrByCurrentQuarter(){
 		Calendar calendar = Calendar.getInstance();
 		Okr okr = okrService.findByUserAtQuarter(this.getUser(), calendar);
@@ -41,7 +41,7 @@ public class OkrController extends AbstractController {
 	}
 
 	@RequestMapping(value="/next",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	@JsonView(VoFilter.DetailView.class) 
+	@JsonView(VoFilter.View.class) 
 	Okr okrByNextQuarter(){
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MONDAY, +3);
@@ -53,7 +53,7 @@ public class OkrController extends AbstractController {
 	}	
 	
 	@RequestMapping(method={RequestMethod.POST,RequestMethod.PUT},produces=MediaType.APPLICATION_JSON_VALUE)
-	@JsonView(VoFilter.DetailView.class) 
+	@JsonView(VoFilter.View.class) 
 	Okr saveOkr(@RequestBody Okr okr){
 		if(okr.getId()>0){
 			String content = okr.getContent();

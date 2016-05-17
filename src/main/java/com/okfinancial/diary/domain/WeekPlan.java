@@ -46,7 +46,7 @@ public class WeekPlan extends AbstractEntity {
 	private int monthNo;
 	
 	@JsonView(VoFilter.View.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "weekPlan")
+	@OneToMany(mappedBy = "weekPlan")
 	private List<DayPlan> dayPlans;
 	
 	private int level;

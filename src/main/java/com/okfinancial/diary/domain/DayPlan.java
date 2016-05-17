@@ -2,12 +2,18 @@ package com.okfinancial.diary.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.okfinancial.diary.web.VoFilter;
 
 @Entity
 public class DayPlan extends AbstractEntity {
@@ -24,7 +30,12 @@ public class DayPlan extends AbstractEntity {
     @JoinColumn(name="user_id")  
 	private User user;
 	
+	@JsonView(VoFilter.View.class)
 	private String planContent;
+	
+	@OneToOne(mappedBy = "dayPlan")
+	@JsonView(VoFilter.View.class)
+	private DayPlanReview reviver;
 	
 	@Enumerated(EnumType.ORDINAL)
 	private STATUS status;
@@ -60,6 +71,14 @@ public class DayPlan extends AbstractEntity {
 
 	public void setStatus(STATUS status) {
 		this.status = status;
+	}
+
+	public DayPlanReview getReviver() {
+		return reviver;
+	}
+
+	public void setReviver(DayPlanReview reviver) {
+		this.reviver = reviver;
 	}
 
 	public User getUser() {
